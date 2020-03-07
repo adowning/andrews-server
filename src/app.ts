@@ -19,6 +19,7 @@ const [appId, masterKey, serverURL, nodeEnv] = [
 let extension = '.js'
 if (process.env.NODE_ENV === 'development') {
   extension = '.ts'
+  process.env.DATABASE_URI = 'mongodb://localhost:27017'
 }
 
 console.log(`${process.env.DATABASE_URI}/${nodeEnv}`)
@@ -26,7 +27,7 @@ const [app, api, dashboard] = [
   express(),
   new ParseServer({
     databaseURI:
-      `${process.env.DATABASE_URI}/${nodeEnv}` || `mongodb://db:27017/${appId}`,
+      `${process.env.DATABASE_URI}/${nodeEnv}`,
     cloud: path.join(__dirname, 'cloud', `main${extension}`),
     appId,
     masterKey,

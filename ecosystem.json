@@ -54,7 +54,7 @@
       "user": "ash",
       "host": ["75.109.198.60"],
       "ref": "origin/master",
-      "repo": "git@github.com:adowning/desktopapp.git",
+      "repo": "git@github.com:adowning/parse-server.git",
       "path": "/parse-server",
       "post-deploy": "npm install; npm build;"
     }

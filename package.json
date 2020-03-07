@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "sed 'function beforeLogin(func?: (request: TriggerRequest) => any): void;'/a function afterLogin(func?: (request: TriggerRequest) => any): void;' ./node_modules/@types/parse/index.d.ts && NODE_ENV=development nodemon --inspect src/server.ts",
+    "devx": "sed 'function beforeLogin(func?: (request: TriggerRequest) => any): void;'/a function afterLogin(func?: (request: TriggerRequest) => any): void;' ./node_modules/@types/parse/index.d.ts && NODE_ENV=development nodemon --inspect src/server.ts",
+    "dev": "node dev.env.js && NODE_ENV=development nodemon --inspect src/server.ts",
     "start": "yarn build &&  NODE_ENV=production node dist/server.js",
     "test": "jest",
     "build": "tsc -p ."
