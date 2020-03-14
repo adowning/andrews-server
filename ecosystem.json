@@ -7,7 +7,7 @@
                 "path": "/webhook",
                 "secret": "Asdfasdf1234",
                 "action": "pullAndReload",
-                "pre_hook": "npm run stop",
+                "pre_hook": "yarn",
                 "post_hook": "echo finished"
             },
             "script": "yarn start"
