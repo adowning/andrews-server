@@ -2,6 +2,14 @@
   "apps": [
     {
       "name": "API",
+      "env_webhook": {
+        "port": 8899,
+        "path": "/webhook",
+        "secret": "Asdfasdf1234",
+        "action": "pullAndReload",
+        "pre_hook": "npm run stop",
+        "post_hook": "echo finished"
+    },
       "script": "yarn start",
       "env_dev": {
         "NODE_ENV": "development",
@@ -58,13 +66,6 @@
       "path": "/srv/server/andrews-server",
       "post-deploy": "nvm use 12; npm install; npm build;"
     }
-  },
-  "env_webhook": {
-    "port": 8899,
-    "path": "/webhook",
-    "secret": "Asdfasdf1234",
-    "action": "pullAndReload",
-    "pre_hook": "npm run stop",
-    "post_hook": "echo finished"
-},
+  }
+
 }
