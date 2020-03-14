@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "API",
-      "script": "start",
+      "script": "yarn start",
       "env_dev": {
         "NODE_ENV": "development",
         "GOOGLE_MAPS_JS_SAMPLES_KEY": "AIzaSyDledkfRPKVQchOfwzE9pSMK5yypjRh3bs",
