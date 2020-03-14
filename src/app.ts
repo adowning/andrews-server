@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import path from 'path'
 import http from 'http'
 import express, { Application } from 'express'
@@ -7,81 +8,81 @@ import initClasses from './cloud/models/init'
 import initHooks from './cloud/hooks/init'
 // import initTests from './cloud/tests/init'
 import myIp from './cloud/helpers/ipHelper'
-
 import { filesAdapter, cacheAdapter } from './adapters'
+import config from './config.js'
 
-const [appId, masterKey, serverURL, nodeEnv] = [
-  process.env.APP_ID || 'AndrewsApp',
-  process.env.MASTER_KEY || 'Asdfasdf1234',
-  `http://${myIp}:${process.env.PORT || 1337}/api`,
-  process.env.NODE_ENV,
+// const { appId, masterKey, serverURL, nodeEnv } = config
+
+const [dbUri, appId, masterKey, serverURL, nodeEnv, extension] = [
+    config.DATABASE_URI,
+    config.APP_ID || 'dev',
+    config.MASTER_KEY || 'dev',
+    `http://${myIp}:${config.PORT || 1337}/api`,
+    config.NODE_ENV,
+    config.EXTENSION,
 ]
-let extension = '.js'
-if (process.env.NODE_ENV === 'development') {
-  extension = '.ts'
-  process.env.DATABASE_URI = 'mongodb://localhost:27017'
-}
+console.log(config)
 
-console.log(`${process.env.DATABASE_URI}/${nodeEnv}`)
 const [app, api, dashboard] = [
-  express(),
-  new ParseServer({
-    databaseURI: `${process.env.DATABASE_URI}/${nodeEnv}`,
-    cloud: path.join(__dirname, 'cloud', `main${extension}`),
-    appId,
-    masterKey,
-    serverURL,
-    liveQuery: {
-      classNames: ['Routes'],
-    },
-    allowClientClassCreation: false,
-    enableAnonymousUsers: false,
-    filesAdapter,
-    cacheAdapter,
-    serverStartComplete: async (): Promise<void> => {
-      if (process.env.NODE_ENV === 'development') {
-        await initClasses({ appId, serverURL, masterKey })
+    express(),
+    new ParseServer({
+        databaseURI: dbUri,
+        cloud: path.join(__dirname, 'cloud', `main${extension}`),
+        appId,
+        masterKey,
+        serverURL,
+        liveQuery: {
+            classNames: ['Routes'],
+        },
+        allowClientClassCreation: false,
+        enableAnonymousUsers: false,
+        filesAdapter,
+        cacheAdapter,
+        serverStartComplete: async (): Promise<void> => {
+            if (process.env.NODE_ENV === 'development') {
+                await initClasses({ appId, serverURL, masterKey })
 
-        await initHooks({ appId, serverURL, masterKey })
-        // await initTests()
-      }
-    },
-  }),
-  new ParseDashboard(
-    {
-      apps: [
-        {
-          serverURL,
-          appId,
-          appName: appId,
-          masterKey,
-          supportedPushLocales: ['en', 'pt'],
+                await initHooks({ appId, serverURL, masterKey })
+                // await initTests()
+            }
         },
-      ],
-      users: [
+    }),
+    new ParseDashboard(
         {
-          user: process.env.DASHBOARD_USERNAME || 'admin',
-          pass: process.env.DASHBOARD_PASSWORD || 'asdfasdf',
+            apps: [
+                {
+                    serverURL,
+                    appId,
+                    appName: appId,
+                    masterKey,
+                    supportedPushLocales: ['en', 'pt'],
+                },
+            ],
+            users: [
+                {
+                    user: process.env.DASHBOARD_USERNAME || 'admin',
+                    pass: process.env.DASHBOARD_PASSWORD || 'asdfasdf',
+                },
+            ],
         },
-      ],
-    },
-    {
-      allowInsecureHTTP: true,
-    },
-  ),
+        {
+            allowInsecureHTTP: true,
+        }
+    ),
 ]
 
 app.use('/api', api as Application)
 app.use('/dashboard', dashboard as Application)
 app.use('/monitor', function(req, res) {
-  res.status(204).send()
+    res.status(204).send()
 })
 app.use('/pubnub', function(req, res) {
-  res.status(204).send()
+    res.status(204).send()
 })
 
 export const App = http.createServer(app)
-export const InitClasses = async (): Promise<void> => initClasses({ appId, serverURL, masterKey })
+export const InitClasses = async (): Promise<void> =>
+    initClasses({ appId, serverURL, masterKey })
 // export const InitHooks = async (): Promise<void> =>
 // initHooks({ appId, serverURL, masterKey })
 // export const InitTests = async (): Promise<void> => initTests()
